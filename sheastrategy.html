@@ -184,9 +184,15 @@
         .budget-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
+            align-items: flex-start;
+            padding: 15px 0;
             border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            gap: 15px;
+        }
+
+        .budget-item span:first-child {
+            flex: 1;
+            line-height: 1.4;
         }
 
         .budget-item:last-child {
@@ -600,9 +606,9 @@
             display: flex;
             justify-content: center;
             align-items: end;
-            height: 220px;
-            gap: 40px;
-            margin: 30px 0 25px 0;
+            height: 200px;
+            gap: 60px;
+            margin: 40px 0 25px 0;
         }
 
         .bar-column {
@@ -612,18 +618,19 @@
         }
 
         .bar-header {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: center;
         }
 
         .bar-title {
             font-weight: 700;
             color: #cbd5e1;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
         .bar-amount {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #3b82f6;
         }
