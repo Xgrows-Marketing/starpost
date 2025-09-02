@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roofing Marketing Strategy Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .strategy-card {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .strategy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-color-light));
+        }
+
+        .failing-strategy {
+            --accent-color: #ef4444;
+            --accent-color-light: #f87171;
+        }
+
+        .winning-strategy {
+            --accent-color: #10b981;
+            --accent-color-light: #34d399;
+        }
+
+        .strategy-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .strategy-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .failing-strategy .strategy-title {
+            color: #fca5a5;
+        }
+
+        .winning-strategy .strategy-title {
+            color: #6ee7b7;
+        }
+
+        .strategy-content h3 {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+
+        .strategy-content ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .strategy-content li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #e2e8f0;
+        }
+
+        .strategy-content li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .example-box {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .example-title {
+            color: var(--accent-color-light);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .budget-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .budget-card {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .budget-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #34d399;
+        }
+
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .budget-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: #34d399;
+        }
+
+        .budget-amount {
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .net-result {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            color: #fca5a5;
+        }
+
+        .success-result {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            color: #6ee7b7;
+        }
+
+        .arrow {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .chart-container {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 20px;
+            padding: 25px 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            text-align: center;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #cbd5e1;
+            line-height: 1.3;
+        }
+
+        .pie-chart-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .pie-chart {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .pie-labels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .pie-label {
+            position: absolute;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 4px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .bar-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            display: block;
+        }
+
+        .bar-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: end;
+            height: 300px;
+            margin: 40px 0 20px 0;
+            padding: 0 20px;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-label {
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        .bar-stack {
+            display: flex;
+            flex-direction: column;
+            width: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bar-segment {
+            width: 100%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .bar-segment.effective {
+            background: linear-gradient(180deg, #10b981, #059669);
+        }
+
+        .bar-segment.wasted {
+            background: linear-gradient(180deg, #ef4444, #dc2626);
+        }
+
+        .bar-segment:hover {
+            transform: scaleX(1.1);
+        }
+
+        .bar-total {
+            font-weight: 700;
+            color: #3b82f6;
+            margin-top: 10px;
+        }
+
+        /* Infographics Section */
+        .infographics-section {
+            margin: 50px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .infographic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .infographic-card {
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .infographic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .infographic-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .infographic-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 20px;
+            background: var(--card-gradient);
+        }
+
+        .infographic-title {
+            flex: 1;
+        }
+
+        .infographic-title h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+
+        .infographic-budget {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .infographic-visual {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .visual-element {
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .visual-element:hover {
+            transform: scale(1.1);
+        }
+
+        .flow-arrow {
+            color: #64748b;
+            font-size: 1.5rem;
+            margin: 0 10px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+
+        .metric-label {
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        .process-steps {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .process-steps li {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .process-steps li:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--card-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        /* Card-specific styles */
+        .card-lead-gen {
+            --card-gradient: linear-gradient(135deg, #3b82f6, #1e40af);
+            --accent-color: #60a5fa;
+        }
+
+        .card-retargeting {
+            --card-gradient: linear-gradient(135deg, #10b981, #059669);
+            --accent-color: #34d399;
+        }
+
+        .card-awareness {
+            --card-gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            --accent-color: #a78bfa;
+        }
+
+        .card-portfolio {
+            --card-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+            --accent-color: #fbbf24;
+        }
+
+        .card-education {
+            --card-gradient: linear-gradient(135deg, #06b6d4, #0891b2);
+            --accent-color: #22d3ee;
+        }
+
+        .card-portfolio-retarget {
+            --card-gradient: linear-gradient(135deg, #ef4444, #dc2626);
+            --accent-color: #f87171;
+        }
+
+        .emoji-visual {
+            font-size: 2rem;
+            margin: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--card-gradient);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Simple Chart Styles */
+        .pie-chart-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .pie-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .total-budget {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 5px;
+        }
+
+        .budget-label {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .comparison-bars {
+            display: flex;
+            justify-content: center;
+            align-items: end;
+            height: 220px;
+            gap: 40px;
+            margin: 30px 0 25px 0;
+        }
+
+        .bar-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bar-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .bar-title {
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+
+        .bar-amount {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .modern-bar {
+            width: 80px;
+            height: 200px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .bar-fill {
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wasted-fill {
+            background: linear-gradient(180deg, #ef4444, #dc2626);
+        }
+
+        .effective-fill {
+            background: linear-gradient(180deg, #10b981, #059669);
+        }
+
+        .bar-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .bar-fill:hover .bar-tooltip {
+            opacity: 1;
+        }
+
+        .efficiency-score {
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .efficiency-score.bad {
+            color: #f87171;
+        }
+
+        .efficiency-score.good {
+            color: #34d399;
+        }
+
+        .vs-divider {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #64748b;
+            margin: 0 20px;
+            align-self: center;
+        }
+
+        .color-1 { background: #3b82f6; }
+        .color-2 { background: #10b981; }
+        .color-3 { background: #8b5cf6; }
+        .color-4 { background: #f59e0b; }
+        .color-5 { background: #06b6d4; }
+        .color-6 { background: #ef4444; }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .strategy-card, .chart-container {
+                padding: 20px;
+            }
+            
+            .pie-chart {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .bar-chart {
+                height: 250px;
+            }
+
+            .infographic-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-bars {
+                flex-direction: column;
+                gap: 30px;
+                height: auto;
+            }
+
+            .vs-divider {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Roofing Marketing Strategy Comparison</h1>
+            <p>Traditional Awareness + Retargeting vs. Our Approach</p>
+        </div>
+
+        <div class="comparison">
+            <!-- Failing Strategy -->
+            <div class="strategy-card failing-strategy">
+                <div class="strategy-header">
+                    <span class="status-icon">🔴</span>
+                    <h2 class="strategy-title">Awareness + Retargeting Only</h2>
+                </div>
+                
+                <div class="strategy-content">
+                    <h3>Why It Fails</h3>
+                    <ul>
+                        <li><span class="highlight">Facebook Awareness campaigns</span> don't target homeowners — they simply aim for the cheapest reach.</li>
+                        <li>That means the budget is <span class="highlight">randomly allocated</span> to renters, students, or people outside your service area.</li>
+                        <li>On average, about <span class="highlight">50% of spend is wasted</span> on people who will never need roofing.</li>
+                        <li>Retargeting then has a <span class="highlight">weak audience pool</span>, because only the small percentage of actual homeowners can be re-engaged.</li>
+                    </ul>
+
+                    <div class="example-box">
+                        <div class="example-title">Example at $200/day:</div>
+                        <div>• $100 Awareness → $50 wasted (non-homeowners), $50 to real homeowners.</div>
+                        <div>• $100 Retargeting → only works on that $50 slice of relevant people.</div>
+                    </div>
+
+                    <div class="net-result">
+                        <span class="arrow">👉</span> Net result: $150/day is either wasted or underutilized.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Winning Strategy -->
+            <div class="strategy-card winning-strategy">
+                <div class="strategy-header">
+                    <span class="status-icon">🟢</span>
+                    <h2 class="strategy-title">Our Approach</h2>
+                </div>
+                
+                <div class="strategy-content">
+                    <h3>Why It Works</h3>
+                    <ul>
+                        <li><strong>Cold Lead Generation ($80/day)</strong><br>Ads designed to <span class="highlight">directly capture qualified homeowners</span> (no wasted targeting).</li>
+                        <li><strong>Cold Awareness ($30/day)</strong><br>Keeps your roofing brand visible and builds recognition in the market.</li>
+                        <li><strong>Traffic to Portfolio Page ($20/day)</strong><br>Sends prospects to a page showing your completed roofing projects.</li>
+                        <li><strong>Retargeting Cold Leads ($40/day)</strong><br>Follows up with people who showed interest in the lead generation ads.</li>
+                        <li><strong>Testimonials & Educational Content ($20/day)</strong><br>Warms up interested homeowners by building trust and credibility.</li>
+                        <li><strong>Retargeting Portfolio Visitors ($10/day)</strong><br>Reminds and converts people who already viewed your past work.</li>
+                    </ul>
+
+                    <div class="success-result">
+                        <span class="arrow">👉</span> Every dollar either attracts a real homeowner or nurtures one until they're ready to start a roofing project.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Charts Section -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <h3 class="chart-title">Daily Budget Allocation - Our Approach</h3>
+                <div class="pie-chart-container">
+                    <div class="pie-chart-wrapper">
+                        <svg width="300" height="300" viewBox="0 0 300 300" style="transform: rotate(-90deg);">
+                            <!-- Cold Lead Generation - 40% -->
+                            <circle cx="150" cy="150" r="100" fill="transparent" stroke="#3b82f6" stroke-width="60"
+                                    stroke-dasharray="251.2 628" stroke-dashoffset="0" opacity="0.9"></circle>
+                            <!-- Retargeting Cold Leads - 20% -->
+                            <circle cx="150" cy="150" r="100" fill="transparent" stroke="#10b981" stroke-width="60"
+                                    stroke-dasharray="125.6 628" stroke-dashoffset="-251.2" opacity="0.9"></circle>
+                            <!-- Cold Awareness - 15% -->
+                            <circle cx="150" cy="150" r="100" fill="transparent" stroke="#8b5cf6" stroke-width="60"
+                                    stroke-dasharray="94.2 628" stroke-dashoffset="-376.8" opacity="0.9"></circle>
+                            <!-- Portfolio Traffic - 10% -->
+                            <circle cx="150" cy="150" r="100" fill="transparent" stroke="#f59e0b" stroke-width="60"
+                                    stroke-dasharray="62.8 628" stroke-dashoffset="-471" opacity="0.9"></circle>
+                            <!-- Testimonials & Education - 10% -->
+                            <circle cx="150" cy="150" r="100" fill="transparent" stroke="#06b6d4" stroke-width="60"
+                                    stroke-dasharray="62.8 628" stroke-dashoffset="-533.8" opacity="0.9"></circle>
+                            <!-- Portfolio Retargeting - 5% -->
+                            <circle cx="150" cy="150" r="100" fill="transparent" stroke="#ef4444" stroke-width="60"
+                                    stroke-dasharray="31.4 628" stroke-dashoffset="-596.6" opacity="0.9"></circle>
+                        </svg>
+                        <div class="pie-center">
+                            <div class="total-budget">$200</div>
+                            <div class="budget-label">Daily Budget</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-color color-1"></span> Cold Lead Generation ($80)</div>
+                    <div class="legend-item"><span class="legend-color color-2"></span> Retargeting Cold Leads ($40)</div>
+                    <div class="legend-item"><span class="legend-color color-3"></span> Cold Awareness ($30)</div>
+                    <div class="legend-item"><span class="legend-color color-4"></span> Portfolio Traffic ($20)</div>
+                    <div class="legend-item"><span class="legend-color color-5"></span> Testimonials & Education ($20)</div>
+                    <div class="legend-item"><span class="legend-color color-6"></span> Portfolio Retargeting ($10)</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Budget Efficiency Comparison</h3>
+                <div class="comparison-bars">
+                    <div class="bar-column">
+                        <div class="bar-header">
+                            <div class="bar-title">Traditional</div>
+                            <div class="bar-amount">$200/day</div>
+                        </div>
+                        <div class="modern-bar">
+                            <div class="bar-fill effective-fill" style="height: 25%;">
+                                <span class="bar-tooltip">$50 Effective</span>
+                            </div>
+                            <div class="bar-fill wasted-fill" style="height: 75%;">
+                                <span class="bar-tooltip">$150 Wasted</span>
+                            </div>
+                        </div>
+                        <div class="efficiency-score bad">25% Efficient</div>
+                    </div>
+                    
+                    <div class="vs-divider">VS</div>
+                    
+                    <div class="bar-column">
+                        <div class="bar-header">
+                            <div class="bar-title">Our Approach</div>
+                            <div class="bar-amount">$200/day</div>
+                        </div>
+                        <div class="modern-bar">
+                            <div class="bar-fill effective-fill" style="height: 100%;">
+                                <span class="bar-tooltip">$200 Effective</span>
+                            </div>
+                        </div>
+                        <div class="efficiency-score good">100% Efficient</div>
+                    </div>
+                </div>
+                
+                <div class="bar-legend">
+                    <div class="legend-item"><span class="legend-color" style="background: #10b981;"></span> Effective Spend</div>
+                    <div class="legend-item"><span class="legend-color" style="background: #ef4444;"></span> Wasted Spend</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Breakdown -->
+        <div class="budget-breakdown">
+            <div class="budget-card">
+                <h3 class="budget-title">Budget Efficiency Breakdown</h3>
+                <div class="budget-item">
+                    <span><span class="highlight">Cold Campaigns</span> (Finding New Homeowners)</span>
+                    <span class="budget-amount">$130/day (65%)</span>
+                </div>
+                <div class="budget-item">
+                    <span><span class="highlight">Retargeting & Nurturing</span> (Converting Interested Homeowners)</span>
+                    <span class="budget-amount">$70/day (35%)</span>
+                </div>
+                <div class="budget-item">
+                    <span><strong>Total Daily Budget</strong></span>
+                    <span class="budget-amount">$200/day</span>
+                </div>
+            </div>
+
+            <div class="budget-card">
+                <h3 class="budget-title">Campaign Allocation</h3>
+                <div class="budget-item">
+                    <span>Cold Lead Generation</span>
+                    <span class="budget-amount">$80</span>
+                </div>
+                <div class="budget-item">
+                    <span>Retargeting Cold Leads</span>
+                    <span class="budget-amount">$40</span>
+                </div>
+                <div class="budget-item">
+                    <span>Cold Awareness</span>
+                    <span class="budget-amount">$30</span>
+                </div>
+                <div class="budget-item">
+                    <span>Traffic to Portfolio</span>
+                    <span class="budget-amount">$20</span>
+                </div>
+                <div class="budget-item">
+                    <span>Testimonials & Education</span>
+                    <span class="budget-amount">$20</span>
+                </div>
+                <div class="budget-item">
+                    <span>Retargeting Portfolio Visitors</span>
+                    <span class="budget-amount">$10</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
